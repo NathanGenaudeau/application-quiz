@@ -10,7 +10,7 @@ export default {
 
   data () {
     return {
-      name: 'Quiz'
+      name: 'Quiz Application'
     }
   }
 }

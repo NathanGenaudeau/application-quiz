@@ -1,84 +1,41 @@
 <template>
   <div>
-    <h1>Quiz</h1>
-    <div id="form">
-      <div>
-        <sui-input ref="nbQuestions" placeholder="Number of questions" type="text" name="nbQuestions" v-model="nbQuestions"></sui-input>
-      </div>
-      <div>
-        <sui-dropdown
-            :options="categories"
-            placeholder="Choose a category"
-            selection
-            v-model="category">
-        </sui-dropdown>
-      </div>
-      <sui-button @click="getData">
-        Let's go !
-      </sui-button>
-    </div>
-      <div v-if="questions.length !== 0">
-        <p>{{ questions[currentQuestion].category }}</p>
-        <p>{{ questions[currentQuestion].type }}</p>
-        <p>{{ questions[currentQuestion].difficulty }}</p>
-        <p>{{ questions[currentQuestion].question }}</p>
-        <p>{{ questions[currentQuestion].correct_answer }}</p>
-        <p>{{ questions[currentQuestion].incorrect_answers }}</p>
-      </div>
-    <sui-button @click="nextQuestion">Next</sui-button>
-  </div>
+    <sui-menu class="fixed inverted blue">
+      <sui-menu-item is="sui-header">PiQuiz</sui-menu-item>
+      <router-link class="text-menu" is="sui-menu-item" v-for="item in sections" :key="item[0]" :to="item[1]">
+        {{ item[0] }}
+      </router-link>
+    </sui-menu>
 
+    <router-view id="content"></router-view>
+
+  </div>
 </template>
 
 <script>
-
-import axios from 'axios'
 
 export default {
   name: 'Home',
   data() {
     return {
-      nbQuestions: 0,
-      categories: [
-        {
-          key: 0,
-          value: 0,
-          text: 'All'
-        }
+      sections: [
+        ['Menu', '/menu'],
+        ['New game', '/start'],
       ],
-      category: '0',
-      questions: [],
-      currentQuestion: 0,
     }
-  },
-
-  methods: {
-    getData() {
-      this.questions = [];
-      const url = this.category === 0 ? 'https://opentdb.com/api.php?amount=' + this.nbQuestions : 'https://opentdb.com/api.php?amount=' + this.nbQuestions + '&category=' + this.category;
-      axios.get(url)
-          .then(response => {
-            for (let question of response.data.results) {
-              this.questions.push(question);
-            }
-          })
-    },
-    nextQuestion() {
-      this.currentQuestion = this.currentQuestion <= this.nbQuestions ? this.currentQuestion+1 : this.currentQuestion;
-    }
-  },
-
-  mounted() {
-    axios.get('https://opentdb.com/api_category.php')
-        .then(response => {
-          for (let category of response.data.trivia_categories) {
-            this.categories.push({
-              key: category.id,
-              value: category.id,
-              text: category.name
-            });
-          }
-        })
   }
 }
 </script>
+
+<style>
+
+#content{
+  padding-top: 100px;
+}
+
+.text-menu{
+  font-size: 1.2em;
+  font-family: 'Lato',sans-serif;
+}
+
+</style>
