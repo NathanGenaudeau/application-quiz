@@ -1,7 +1,7 @@
 <template>
   <div>
     <sui-menu class="fixed inverted blue">
-      <sui-menu-item is="sui-header">PiQuiz</sui-menu-item>
+      <sui-menu-item is="sui-header">MultiQuiz</sui-menu-item>
       <router-link class="text-menu" is="sui-menu-item" v-for="item in sections" :key="item[0]" :to="item[1]">
         {{ item[0] }}
       </router-link>
@@ -30,7 +30,7 @@ export default {
 <style>
 
 #content{
-  padding-top: 100px;
+  padding-top: 10%;
 }
 
 .text-menu{
