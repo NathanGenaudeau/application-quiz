@@ -8,7 +8,7 @@
 export default {
   name: 'App',
 
-  data () {
+  data() {
     return {
       name: 'Quiz Application'
     }

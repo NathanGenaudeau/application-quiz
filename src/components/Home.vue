@@ -1,41 +1,29 @@
 <template>
   <div>
-    <sui-menu class="fixed inverted blue">
-      <sui-menu-item is="sui-header">MultiQuiz</sui-menu-item>
-      <router-link class="text-menu" is="sui-menu-item" v-for="item in sections" :key="item[0]" :to="item[1]">
-        {{ item[0] }}
-      </router-link>
-    </sui-menu>
-
-    <router-view id="content"></router-view>
-
+    <sui-grid class="centered">
+      <sui-container text>
+        <h1 is="sui-header">Welcome to MultiQuiz !</h1>
+        <sui-divider hidden/>
+        <p>MultiQuiz is a game where you have to answer different questions and find the right answer among the proposed choices !</p>
+        <p>Questions are taken from the Trivia database which can be found here : <a href="https://opentdb.com/" target="_blank">Trivia API</a>.</p>
+        <sui-divider hidden/>
+        <router-link to="start">
+          <sui-button size="big" color="green">
+            Let's go !
+          </sui-button>
+        </router-link>
+      </sui-container>
+    </sui-grid>
   </div>
 </template>
 
 <script>
-
 export default {
-  name: 'Home',
-  data() {
-    return {
-      sections: [
-        ['Menu', '/menu'],
-        ['New game', '/start'],
-      ],
-    }
-  }
+  name: "Home"
 }
 </script>
 
-<style>
+<style scoped>
 
-#content{
-  padding-top: 10%;
-}
-
-.text-menu{
-  font-size: 1.2em;
-  font-family: 'Lato',sans-serif;
-}
 
 </style>
