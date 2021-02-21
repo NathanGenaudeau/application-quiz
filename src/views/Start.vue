@@ -22,7 +22,7 @@
               <h3>Choose a category</h3>
             </sui-grid-column>
             <sui-grid-column :width="4">
-              <sui-dropdown fluid :loading="loaded" :options="categories" placeholder="Category" selection v-model="category">
+              <sui-dropdown fluid :loading="loaded" :options="categories" placeholder="Category" selection v-model="category" @input="testNumber">
               </sui-dropdown>
             </sui-grid-column>
           </sui-grid-row>
@@ -61,7 +61,7 @@ export default {
   methods: {
     verify() {
       const cat = this.categories.filter((c) => c.value === this.category)[0];
-      if (cat.number > this.nbQuestions && this.nbQuestions < 50 && this.nbQuestions > 0) this.$router.push({name: 'Quiz', params: {nbQuestions: this.nbQuestions, category: this.category}})
+      if (cat.number > this.nbQuestions && this.nbQuestions <= 50 && this.nbQuestions > 0) this.$router.push({name: 'Quiz', params: {nbQuestions: this.nbQuestions, category: this.category}})
     },
 
     testNumber() {
@@ -72,6 +72,7 @@ export default {
       } else if (cat.number < this.nbQuestions) {
         this.notEnoughQuestions = true;
         this.disableStart = true;
+        this.notValidNumber = false;
       } else {
         this.notEnoughQuestions = false;
         this.disableStart = false;
@@ -81,7 +82,7 @@ export default {
   },
 
   mounted() {
-    axios.get('https://opentdb.com/api_count_global.php')
+    const p1 = axios.get('https://opentdb.com/api_count_global.php')
         .then(response => {
           this.categories.push({
             key: 0,
@@ -91,7 +92,7 @@ export default {
           });
         });
 
-    axios.get('https://opentdb.com/api_category.php')
+    const p2 = axios.get('https://opentdb.com/api_category.php')
         .then(response => {
           for (let category of response.data.trivia_categories) {
             axios.get('https://opentdb.com/api_count.php?category=' + category.id)
@@ -104,11 +105,14 @@ export default {
 
                 });
           }
-          this.categories.sort(function (a, b) {
-            return a.value - b.value;
-          });
-          this.loaded = false;
         });
+
+    Promise.all([p1, p2]).then(() => {
+      this.categories.sort(function (a, b) {
+        return a.value - b.value;
+      });
+      this.loaded = false;
+    });
   }
 }
 </script>

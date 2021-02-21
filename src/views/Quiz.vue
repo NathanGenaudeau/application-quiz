@@ -2,7 +2,6 @@
   <div>
     <sui-grid class="centered">
       <sui-container>
-
         <sui-card class="blue centered" v-if="questions.length !== 0 && ((currentQuestion + 1) <= nbQuestions)">
           <sui-card-content>
             <sui-card-header>
@@ -12,11 +11,12 @@
               <div>Question {{ currentQuestion + 1 }} / {{ nbQuestions }}</div>
             </sui-card-header>
           </sui-card-content>
+
           <sui-card-content>
-            <sui-divider fitted hidden/>
+            <sui-label size="big" color="blue" class="right floated">Score : {{ correctAnswers }}</sui-label>
+            <sui-divider clearing fitted hidden/>
             <sui-header>{{ questions[currentQuestion].question }}</sui-header>
             <sui-divider hidden/>
-
             <sui-grid class="centered" :columns="2" divided="vertically">
               <sui-grid-row>
                 <sui-grid-column v-for="answer in questions[currentQuestion].answers" :key="answer">
@@ -24,8 +24,6 @@
                 </sui-grid-column>
               </sui-grid-row>
             </sui-grid>
-
-            <sui-message :positive="response" :negative="!response" v-if="result">{{ response }}</sui-message>
           </sui-card-content>
 
           <sui-card-content extra>
@@ -35,7 +33,6 @@
             </router-link>
           </sui-card-content>
         </sui-card>
-
       </sui-container>
     </sui-grid>
   </div>
@@ -54,7 +51,6 @@ export default {
       correctAnswers: 0,
       disableButton: false,
       disableNext: true,
-      response: '',
       result: false,
     }
   },
@@ -102,9 +98,7 @@ export default {
       this.result = true;
       if (question.correct_answer === response){
         this.correctAnswers++;
-        this.response = true;
       }
-      else this.response = false;
     }
   },
 

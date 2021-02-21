@@ -3,11 +3,13 @@
     <sui-grid class="centered">
       <sui-container>
         <h1 is="sui-header">Results : {{ correctAnswers }} / {{ questions.length }}</h1>
+        <h2>{{((correctAnswers/questions.length)*100).toPrecision(2)}} % of correct answers !</h2>
+        <h3 v-if="(correctAnswers/questions.length)*100 < 50">Not bad ! Congratulation, you will do better next time !</h3>
+        <h3 v-else-if="(correctAnswers/questions.length)*100 >= 50 && (correctAnswers/questions.length)*100 < 99">Good ! Congratulation, you have a good culture !</h3>
+        <h3 v-else-if="(correctAnswers/questions.length)*100 === 100">Perfect ! Congratulation, you are a culture freak !</h3>
         <sui-divider hidden/>
         <router-link to="start">
-          <sui-button size="big" primary>
-            New game
-          </sui-button>
+          <sui-button size="big" primary>New game</sui-button>
         </router-link>
         <sui-divider hidden/>
       </sui-container>
