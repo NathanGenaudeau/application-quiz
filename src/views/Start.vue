@@ -11,8 +11,9 @@
               <h3>Choose a number of questions (50 max)</h3>
             </sui-grid-column>
             <sui-grid-column :width="4">
-              <sui-input fluid ref="nbQuestions" placeholder="Number" type="number" name="nbQuestions" v-model="nbQuestions"></sui-input>
-              <sui-label v-if="error" basic color="red" pointing>Number is too big or too small !</sui-label>
+              <sui-input fluid ref="nbQuestions" placeholder="Number" type="number" name="nbQuestions" v-model="nbQuestions" @input="testNumber"></sui-input>
+              <sui-label v-if="notValidNumber" basic color="red" pointing>Number is too big or too small !</sui-label>
+              <sui-label v-else-if="notEnoughQuestions" basic color="red" pointing>Not enough questions in this category !</sui-label>
             </sui-grid-column>
           </sui-grid-row>
 
@@ -21,18 +22,14 @@
               <h3>Choose a category</h3>
             </sui-grid-column>
             <sui-grid-column :width="4">
-              <sui-dropdown fluid :options="categories" placeholder="Category" selection v-model="category">
+              <sui-dropdown fluid :loading="loaded" :options="categories" placeholder="Category" selection v-model="category">
               </sui-dropdown>
             </sui-grid-column>
           </sui-grid-row>
 
           <sui-grid-row :columns="1">
             <sui-grid-column :width="2">
-              <!--<router-link :to="{ name: 'Quiz', params: { nbQuestions, category } }">-->
-              <sui-button @click="verify" fluid size="big" color="green">
-                Start
-              </sui-button>
-              <!--</router-link>-->
+                <sui-button :disabled="disableStart" @click="verify" fluid size="big" color="green">Start</sui-button>
             </sui-grid-column>
           </sui-grid-row>
 
@@ -54,14 +51,32 @@ export default {
       categories: [],
       category: 0,
       error: false,
+      loaded: true,
+      notEnoughQuestions: false,
+      notValidNumber: false,
+      disableStart: false,
     }
   },
 
   methods: {
     verify() {
       const cat = this.categories.filter((c) => c.value === this.category)[0];
-      if (cat.number < this.nbQuestions || this.nbQuestions > 50 || this.nbQuestions <= 0) this.error = true;
-      else this.$router.push({name: 'Quiz', params: {nbQuestions: this.nbQuestions, category: this.category}})
+      if (cat.number > this.nbQuestions && this.nbQuestions < 50 && this.nbQuestions > 0) this.$router.push({name: 'Quiz', params: {nbQuestions: this.nbQuestions, category: this.category}})
+    },
+
+    testNumber() {
+      const cat = this.categories.filter((c) => c.value === this.category)[0];
+      if (this.nbQuestions > 50 || this.nbQuestions <= 0) {
+        this.notValidNumber = true;
+        this.disableStart = true;
+      } else if (cat.number < this.nbQuestions) {
+        this.notEnoughQuestions = true;
+        this.disableStart = true;
+      } else {
+        this.notEnoughQuestions = false;
+        this.disableStart = false;
+        this.notValidNumber = false;
+      }
     }
   },
 
@@ -89,9 +104,10 @@ export default {
 
                 });
           }
-          this.categories.sort(function (a, b){
+          this.categories.sort(function (a, b) {
             return a.value - b.value;
           });
+          this.loaded = false;
         });
   }
 }

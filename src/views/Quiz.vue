@@ -20,23 +20,21 @@
             <sui-grid class="centered" :columns="2" divided="vertically">
               <sui-grid-row>
                 <sui-grid-column v-for="answer in questions[currentQuestion].answers" :key="answer">
-                  <sui-button fluid v-bind:disabled="disableButton" @click="getResponse(questions[currentQuestion], answer); disableButtons()">{{ answer }}</sui-button>
+                  <sui-button fluid :disabled="disableButton" :class="{green: (questions[currentQuestion].correct_answer === answer && disableButton), red: (questions[currentQuestion].correct_answer !== answer && disableButton)}" @click="getResponse(questions[currentQuestion], answer); disableButtons()">{{ answer }}</sui-button>
                 </sui-grid-column>
               </sui-grid-row>
             </sui-grid>
-            <sui-message v-bind:positive="response" v-bind:negative="!response" v-if="result">{{ response }}</sui-message>
+
+            <sui-message :positive="response" :negative="!response" v-if="result">{{ response }}</sui-message>
           </sui-card-content>
+
           <sui-card-content extra>
-            <sui-button v-if="(currentQuestion + 1) < nbQuestions" size="big" primary @click="nextQuestion">Next question</sui-button>
+            <sui-button :disabled="disableNext" v-if="(currentQuestion + 1) < nbQuestions" size="big" primary @click="nextQuestion">Next question</sui-button>
             <router-link v-else :to="{name: 'Results', params: {correctAnswers, questions}}">
               <sui-button size="big" primary >View results</sui-button>
             </router-link>
           </sui-card-content>
         </sui-card>
-
-        <!--<div v-if="end">
-          {{ correctAnswers }} / {{ nbQuestions }} correct answers !
-        </div>-->
 
       </sui-container>
     </sui-grid>
@@ -54,8 +52,8 @@ export default {
       questions: [],
       currentQuestion: 0,
       correctAnswers: 0,
-      end: false,
       disableButton: false,
+      disableNext: true,
       response: '',
       result: false,
     }
@@ -88,15 +86,16 @@ export default {
 
     nextQuestion() {
       this.result = false;
+      this.disableNext = true;
       if (this.currentQuestion + 1 < this.nbQuestions){
         this.currentQuestion++;
         this.disableButton = false;
       }
-      else this.end = true;
     },
 
     disableButtons() {
       this.disableButton = true;
+      this.disableNext = false;
     },
 
     getResponse(question, response) {
@@ -140,7 +139,6 @@ export default {
 </script>
 
 <style scoped>
-
 .card {
   min-width: 75%;
 }
@@ -148,5 +146,4 @@ export default {
 .ui.fluid.button{
   height: 100px;
 }
-
 </style>

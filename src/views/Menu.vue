@@ -8,12 +8,10 @@
     </sui-menu>
 
     <router-view id="content"></router-view>
-
   </div>
 </template>
 
 <script>
-
 export default {
   name: 'Menu',
   data() {
@@ -28,14 +26,15 @@ export default {
 </script>
 
 <style>
-
 #content {
   padding-top: 10%;
 }
 
 .text-menu {
   font-size: 1.3em;
-  font-family: 'Lato', sans-serif;
 }
 
+body{
+  background-color: #fafafa!important;
+}
 </style>
